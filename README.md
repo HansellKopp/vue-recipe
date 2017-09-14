@@ -1,10 +1,8 @@
 # pwa-recipebook
 
->A Vue.js project to consume RESTful Api:
-
-    [Cooking recipes](https://github.com/pedroobando/apirecipe)
-
-> Project created using pwa vue template
+A Vue.js project to consume RESTful Api
+[Cooking recipes](https://github.com/pedroobando/apirecipe)
+Project created using pwa vue template
 
 ## Build Setup
 
