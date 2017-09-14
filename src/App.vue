@@ -1,10 +1,14 @@
 <template>
   <div id="app">
     <header>
-      <span>Vue.js PWA</span>
+      <b-navbar type="light" variant="light" toggleable>
+        <b-navbar-brand href="/#" router-tag="Home">Recipes Editor</b-navbar-brand>
+        <b-nav-item href="/#/categories" router-tag="Categories">Categories</b-nav-item>
+        <b-nav-item href="/#/measures" router-tag="Measures">Measures</b-nav-item>
+        <b-nav-item href="/#/recipes" router-tag="Recipes"> Recipes</b-nav-item>
+      </b-navbar>
     </header>
     <main>
-      <img src="./assets/logo.png" alt="Vue.js PWA">
       <router-view></router-view>
     </main>
   </div>
