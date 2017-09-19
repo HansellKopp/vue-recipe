@@ -9,7 +9,9 @@
       </b-navbar>
     </header>
     <main>
-      <router-view></router-view>
+      <b-container class="mt-2">
+        <router-view></router-view>
+      </b-container>
     </main>
   </div>
 </template>
@@ -21,17 +23,11 @@ export default {
 </script>
 
 <style scoped>
-h1, h2 {
-  font-weight: normal;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
 li {
   display: inline-block;
   margin: 0 10px;
+}
+li > a {
+   color: yellowgreen
 }
 </style>

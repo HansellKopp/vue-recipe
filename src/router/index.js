@@ -4,7 +4,14 @@ import Home from '@/components/Home'
 import Recipes from '@/components/Recipes'
 import Categories from '@/components/Categories'
 import Measures from '@/components/Measures'
+import Icon from 'vue-awesome/components/Icon'
+// import icons
+import 'vue-awesome/icons/plus' // Add
+import 'vue-awesome/icons/trash' // Delete
+import 'vue-awesome/icons/pencil' // edit
+import 'vue-awesome/icons/filter' // filter
 
+Vue.component('icon', Icon)
 Vue.use(Router)
 
 export default new Router({

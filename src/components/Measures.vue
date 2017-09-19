@@ -1,30 +1,39 @@
 <template>
-  <b-container class="gray mt-4">
+  <b-container>
     <b-row>
-      <b-col sm="6">
+      <b-col sm-6>
         <span class="display-4">Measures</span>
       </b-col>
-      <b-col sm="6" class="mt-2 mb-2">
+      <b-col sm-6 class="mt-3">
+        <b-button-group class="float-right">
+          <b-btn variant="primary"><icon name="plus"></icon></b-btn> 
+          <b-btn variant="primary">Add Measure</b-btn>
+        </b-button-group>
+      </b-col>
+    </b-row>
+    <hr />
+    <b-row>
+      <b-col sm-8 class="mt-2">
         <b-input-group>
-          <b-input-group-addon>Filter</b-input-group-addon>    
+          <b-input-group-addon><icon name="filter"></icon></b-input-group-addon>    
           <b-form-input v-model="filter" placeholder="Type to Search"></b-form-input>    
-          <b-input-group-button slot="right">
-            <b-btn variant="outline-info">Apply</b-btn>
-          </b-input-group-button>
         </b-input-group>
+      </b-col>
+      <b-col sm-4 class="mt-2">
+          <b-pagination
+            :total-rows="totalRows"
+            :per-page="perPage"
+            v-model="currentPage"
+            class="float-right"
+          />
       </b-col>
     </b-row>
     <b-row>
-      <b-input-group>
-          <b-input-group-addon>New Measure</b-input-group-addon>    
-          <b-form-input v-model="filter" placeholder="Add new"></b-form-input>    
-          <b-input-group-button slot="right">
-            <b-btn variant="outline-info">Submit</b-btn>
-          </b-input-group-button>
-        </b-input-group>
+      
     </b-row>
-      <div class="row">
-          <b-table striped hover show-empty
+    <b-row>
+      <b-col sm="12">
+        <b-table striped hover show-empty responsive
            :items="items"
            :fields="fields"
            :current-page="currentPage"
@@ -33,19 +42,24 @@
            :sort-by.sync="sortBy"
            :sort-desc.sync="sortDesc"
            @filtered="onFiltered"
-          >
-          <template slot="name" scope="row">{{row.value.first}} {{row.value.last}}</template>
-          <template slot="active" scope="row">{{row.value?'Yes':'No'}}</template>
-          <template slot="actions" scope="row">
-            <b-btn size="sm" @click.stop="view(row.item,row.index,$event.target)">view</b-btn>
-            <b-btn size="sm" @click.stop="edit(row.item,row.index,$event.target)">edit</b-btn>
-          </template>
-        </b-table>        
-      </div>
-      <b-modal id="modal1" @hide="resetModal" ok-only>
-        <h4 class="my-1 py-1" slot="modal-header">Index: {{ modalDetails.index }}</h4>
-        <pre>{{ modalDetails.data }}</pre>
-      </b-modal>
+        >
+        <template slot="name" scope="row">{{row.value}}</template>
+        <template slot="active" scope="row">{{row.value?'Yes':'No'}}</template>
+        <template slot="actions" scope="row">
+        <b-btn size="sm" variant="success" @click.stop="edit(row.item,row.index,$event.target)">
+          <icon name="pencil"></icon>
+        </b-btn>
+        <b-btn size="sm" variant="danger" @click.stop="delete(row.item,row.index,$event.target)">
+          <icon name="trash"></icon>
+        </b-btn>
+        </template>
+      </b-table>        
+      </b-col>
+    </b-row>
+    <b-modal id="modal1" @hide="resetModal" ok-only>
+       <h4 class="my-1 py-1" slot="modal-header">Index: {{ modalDetails.index }}</h4>
+      <pre>{{ modalDetails.data }}</pre>
+    </b-modal>
   </b-container>
 </template>
 
@@ -60,7 +74,7 @@ export default {
       items,
       fields: {
         id: { label: 'id', sortable: true },
-        description: { label: 'Description', sortable: true },
+        name: { label: 'name', sortable: true },
         active: { label: 'is Active', sortable: true },
         actions: { label: 'Actions' }
       },
@@ -84,6 +98,11 @@ export default {
       this.modalDetails.index = index
       this.$root.$emit('show::modal', 'modal1', button)
     },
+    delete (item, index, button) {
+      this.modalDetails.data = JSON.stringify(item, null, 2)
+      this.modalDetails.index = index
+      this.$root.$emit('show::modal', 'modal1', button)
+    },
     resetModal () {
       this.modalDetails.data = ''
       this.modalDetails.index = ''
@@ -97,8 +116,8 @@ export default {
 }
 </script>
 
-<style >
-.gray {
-  background-color: #bbdefb;
+<style scoped>
+.container {
+  background-color: #e3f2fd;
 }
 </style>
