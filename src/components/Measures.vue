@@ -7,7 +7,7 @@
       <b-col sm-6 class="mt-3">
         <b-button-group class="float-right">
           <b-btn variant="primary"><icon name="plus"></icon></b-btn> 
-          <b-btn variant="primary">Add Measure</b-btn>
+          <b-btn variant="primary" @click.stop="add">Add Measure</b-btn>
         </b-button-group>
       </b-col>
     </b-row>
@@ -29,9 +29,6 @@
       </b-col>
     </b-row>
     <b-row>
-      
-    </b-row>
-    <b-row>
       <b-col sm="12">
         <b-table striped hover show-empty responsive
            :items="items"
@@ -46,19 +43,32 @@
         <template slot="name" scope="row">{{row.value}}</template>
         <template slot="active" scope="row">{{row.value?'Yes':'No'}}</template>
         <template slot="actions" scope="row">
-        <b-btn size="sm" variant="success" @click.stop="edit(row.item,row.index,$event.target)">
+        <b-btn size="sm" variant="success" @click.stop="edit(row.item,row.index,$event.target)">        
           <icon name="pencil"></icon>
         </b-btn>
-        <b-btn size="sm" variant="danger" @click.stop="delete(row.item,row.index,$event.target)">
+        <b-btn size="sm" variant="danger"  @click.stop="remove(row.item,row.index,$event.target)">
           <icon name="trash"></icon>
         </b-btn>
         </template>
       </b-table>        
       </b-col>
     </b-row>
-    <b-modal id="modal1" @hide="resetModal" ok-only>
-       <h4 class="my-1 py-1" slot="modal-header">Index: {{ modalDetails.index }}</h4>
-      <pre>{{ modalDetails.data }}</pre>
+    <b-modal
+      id="modalEdit"
+      @ok="handleSubmit"
+    >
+       <h4 class="my-1 py-1" slot="modal-header" v-if="this.modelData.id=''">Add new measure</h4>
+       <b-form  @submit.stop.prevent="handleSubmit">
+          <b-form-group            
+              label="Measure:" label-for="measureInput"
+          >
+            <b-form-input id="measureInput"
+              type="text" v-model="modelData.name" required
+              placeholder="Enter measure name"
+            >
+          </b-form-input>
+        </b-form-group>
+       </b-form>
     </b-modal>
   </b-container>
 </template>
@@ -84,33 +94,42 @@ export default {
       sortBy: 'description',
       sortDesc: false,
       filter: null,
-      modalDetails: { index: '', data: '' }
+      modelData: { id: '', name: '', active: true }
     }
   },
   methods: {
-    view (item, index, button) {
-      this.modalDetails.data = JSON.stringify(item, null, 2)
-      this.modalDetails.index = index
-      this.$root.$emit('show::modal', 'modal1', button)
+    add () {
+      this.clearData()
+      this.$root.$emit('show::modal', 'modalEdit')
     },
     edit (item, index, button) {
-      this.modalDetails.data = JSON.stringify(item, null, 2)
-      this.modalDetails.index = index
-      this.$root.$emit('show::modal', 'modal1', button)
+      this.modelData = item
+      this.$root.$emit('show::modal', 'modalEdit', button)
     },
-    delete (item, index, button) {
-      this.modalDetails.data = JSON.stringify(item, null, 2)
-      this.modalDetails.index = index
-      this.$root.$emit('show::modal', 'modal1', button)
+    remove (item, index, button) {
+      if (index >= 0) {
+        this.items.splice(index, 1)
+      }
     },
-    resetModal () {
-      this.modalDetails.data = ''
-      this.modalDetails.index = ''
+    clearData () {
+      this.modelData = { id: '', name: '', active: true }
     },
     onFiltered (filteredItems) {
-      // Trigger pagination to update the number of buttons/pages due to filtering
       this.totalRows = filteredItems.length
       this.currentPage = 1
+    },
+    handleSubmit () {
+      if (!this.isValidModelData()) {
+        const itemIndex = this.items.findIndex(s => s.id === this.modelData.id)
+        if (itemIndex >= 0) {
+          this.items[itemIndex] = this.modelData
+        } else {
+          this.items.push(this.modelData)
+        }
+      }
+    },
+    isValidModelData () {
+      return this.modelData.name.length > 3
     }
   }
 }
