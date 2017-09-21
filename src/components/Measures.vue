@@ -57,16 +57,20 @@
       id="modalEdit"
       @ok="handleSubmit"
     >
-       <h4 class="my-1 py-1" slot="modal-header" v-if="this.modelData.id=''">Add new measure</h4>
+       <h4 class="my-1 py-1" slot="modal-header" v-if="!this.model.id">Add new measure</h4>
+       <h4 class="my-1 py-1" slot="modal-header" v-if="this.model.id">Edit measure</h4>
        <b-form  @submit.stop.prevent="handleSubmit">
           <b-form-group            
               label="Measure:" label-for="measureInput"
           >
-            <b-form-input id="measureInput"
-              type="text" v-model="modelData.name" required
+            <b-form-input
+              type="text" v-model="model.name" required
               placeholder="Enter measure name"
             >
           </b-form-input>
+          <b-form-checkbox v-model="model.active">
+            Active
+          </b-form-checkbox>
         </b-form-group>
        </b-form>
     </b-modal>
@@ -74,14 +78,16 @@
 </template>
 
 <script>
-// -- http://localhost:3000/measure
-import items from './data'
+
+const model = { id: null, name: '', active: true }
+const items = [ model ]
 
 export default {
   name: 'measures',
   data () {
     return {
       items,
+      model,
       fields: {
         id: { label: 'id', sortable: true },
         name: { label: 'name', sortable: true },
@@ -93,8 +99,7 @@ export default {
       totalRows: items.length,
       sortBy: 'description',
       sortDesc: false,
-      filter: null,
-      modelData: { id: '', name: '', active: true }
+      filter: null
     }
   },
   methods: {
@@ -103,34 +108,61 @@ export default {
       this.$root.$emit('show::modal', 'modalEdit')
     },
     edit (item, index, button) {
-      this.modelData = item
+      this.model = {...item}
       this.$root.$emit('show::modal', 'modalEdit', button)
     },
     remove (item, index, button) {
-      if (index >= 0) {
-        this.items.splice(index, 1)
+      if (item.id) {
+        this.$http.delete(`measure/${item.id}`)
+            .then(response => {
+              this.getItems()
+            }, error => {
+              console.log(error)
+            })
       }
     },
     clearData () {
-      this.modelData = { id: '', name: '', active: true }
+      this.model = model
+    },
+    getItems () {
+      this.$http.get('measure')
+        .then(response => {
+          this.items = response.data.data
+        }, error => {
+          console.log('error', error)
+        })
     },
     onFiltered (filteredItems) {
       this.totalRows = filteredItems.length
       this.currentPage = 1
     },
     handleSubmit () {
-      if (!this.isValidModelData()) {
-        const itemIndex = this.items.findIndex(s => s.id === this.modelData.id)
-        if (itemIndex >= 0) {
-          this.items[itemIndex] = this.modelData
+      if (this.isValidModel()) {
+        if (!this.model.id) {
+          this.$http.post('measure', { ...this.model })
+            .then(response => {
+              this.getItems()
+            }, error => {
+              console.log(error)
+            })
         } else {
-          this.items.push(this.modelData)
+          this.$http.put(`measure/${this.model.id}`, { ...this.model })
+            .then(response => {
+              this.getItems()
+            }, error => {
+              console.log(error)
+            })
         }
+      } else {
+        console.log('invalid')
       }
     },
-    isValidModelData () {
-      return this.modelData.name.length > 3
+    isValidModel () {
+      return (this.model.name.length > 3)
     }
+  },
+  created: function () {
+    this.getItems()
   }
 }
 </script>
