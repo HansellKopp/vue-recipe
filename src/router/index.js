@@ -2,8 +2,10 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/components/Home'
 import Recipes from '@/components/Recipes'
-import Categories from '@/components/Categories'
 import Measures from '@/components/Measures'
+import Categories from '@/components/Categories'
+import Ingredients from '@/components/Ingredients'
+
 import Icon from 'vue-awesome/components/Icon'
 // import icons
 import 'vue-awesome/icons/plus' // Add
@@ -35,6 +37,11 @@ export default new Router({
       path: '/measures',
       name: 'Measures',
       component: Measures
+    },
+    {
+      path: '/ingredients',
+      name: 'Ingredients',
+      component: Ingredients
     }
   ]
 })

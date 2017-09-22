@@ -2,12 +2,12 @@
   <b-container>
     <b-row>
       <b-col sm-6>
-        <span class="display-4">Categories</span>
+        <span class="display-4">Ingredients</span>
       </b-col>
       <b-col sm-6 class="mt-3">
-        <b-button-group class="float-right"  @click.stop="add">
-          <b-btn variant="primary"><icon name="plus"></icon></b-btn>
-          <b-btn variant="primary">Add Category</b-btn>
+        <b-button-group class="float-right" @click.stop="add">
+          <b-btn variant="primary"><icon name="plus"></icon></b-btn> 
+          <b-btn variant="primary">Add Ingredient</b-btn>
         </b-button-group>
       </b-col>
     </b-row>
@@ -57,21 +57,21 @@
       id="modalEdit"
       @ok="handleSubmit"
     >
-       <h4 class="my-1 py-1" slot="modal-header" v-if="!this.model.id">Add new category</h4>
-       <h4 class="my-1 py-1" slot="modal-header" v-if="this.model.id">Edit category</h4>
+       <h4 class="my-1 py-1" slot="modal-header" v-if="!this.model.id">Add new ingredient</h4>
+       <h4 class="my-1 py-1" slot="modal-header" v-if="this.model.id">Edit ingredient</h4>
        <b-form  @submit.stop.prevent="handleSubmit">
-          <b-form-group            
-              label="category:" label-for="categoryInput"
+          <b-form-group
+              label="Name:" label-for="NameInput"
           >
             <b-form-input
               type="text" v-model="model.name" required
-              placeholder="Enter category name"
+              placeholder="Enter ingredient name"
             >
           </b-form-input>
-          <b-form-checkbox v-model="model.active">
-            Active
-          </b-form-checkbox>
         </b-form-group>
+        <b-form-checkbox v-model="model.active">
+            Active
+        </b-form-checkbox>
        </b-form>
     </b-modal>
   </b-container>
@@ -83,7 +83,7 @@ const model = { id: null, name: '', active: true }
 const items = [ ]
 
 export default {
-  name: 'categories',
+  name: 'ingredients',
   data () {
     return {
       items,
@@ -91,13 +91,14 @@ export default {
       fields: {
         id: { label: 'id', sortable: true },
         name: { label: 'name', sortable: true },
+        price: { label: 'price', sortable: true },
         active: { label: 'is Active', sortable: true },
         actions: { label: 'Actions' }
       },
       currentPage: 1,
       perPage: 12,
       totalRows: items.length,
-      sortBy: 'description',
+      sortBy: 'name',
       sortDesc: false,
       filter: null
     }
@@ -113,7 +114,7 @@ export default {
     },
     remove (item, index, button) {
       if (item.id) {
-        this.$http.delete(`category/${item.id}`)
+        this.$http.delete(`ingredient/${item.id}`)
             .then(response => {
               this.getItems()
             }, error => {
@@ -125,7 +126,7 @@ export default {
       this.model = model
     },
     getItems () {
-      this.$http.get('category')
+      this.$http.get('ingredient')
         .then(response => {
           this.items = response.data.data
         }, error => {
@@ -139,14 +140,14 @@ export default {
     handleSubmit () {
       if (this.isValidModel()) {
         if (!this.model.id) {
-          this.$http.post('category', { ...this.model })
+          this.$http.post('ingredient', { ...this.model })
             .then(response => {
               this.getItems()
             }, error => {
               console.log(error)
             })
         } else {
-          this.$http.put(`category/${this.model.id}`, { ...this.model })
+          this.$http.put(`ingredient/${this.model.id}`, { ...this.model })
             .then(response => {
               this.getItems()
             }, error => {

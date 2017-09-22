@@ -5,9 +5,9 @@
         <span class="display-4">Measures</span>
       </b-col>
       <b-col sm-6 class="mt-3">
-        <b-button-group class="float-right">
+        <b-button-group class="float-right" @click.stop="add">
           <b-btn variant="primary"><icon name="plus"></icon></b-btn> 
-          <b-btn variant="primary" @click.stop="add">Add Measure</b-btn>
+          <b-btn variant="primary">Add Measure</b-btn>
         </b-button-group>
       </b-col>
     </b-row>
@@ -80,7 +80,7 @@
 <script>
 
 const model = { id: null, name: '', active: true }
-const items = [ model ]
+const items = [ ]
 
 export default {
   name: 'measures',
