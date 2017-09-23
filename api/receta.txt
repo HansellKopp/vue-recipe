@@ -1,0 +1,12 @@
+Receta
+nombre
+categoria (entrada - primer plato - segundo plato postre dulce)
+tipo plato (pasta - sopa - postre)
+tipo cocinado ( frito - asado - horneado)
+dificultad ( sencillo - media - alto)
+porciones ( 2 - 3 - 5)
+ingredientes -> coleccion
+preparacion (texto)
+comentarios o trucos (texto)
+imagenes receta
+-----------------
