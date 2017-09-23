@@ -78,8 +78,7 @@
 </template>
 
 <script>
-
-const model = { id: null, name: '', active: true }
+const model = { id: null, name: '', price: 0, active: true }
 const items = [ ]
 
 export default {
